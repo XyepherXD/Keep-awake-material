@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Work Dashboard</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+  #sheet-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  /* Hidden keep-awake video: 1x1 pixel, muted, looping, autoplaying */
+  #keep-awake {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+  <!-- 
+    IMPORTANT: Replace the src below with your PUBLISHED sheet URL, not the edit link.
+    Steps to get it:
+      1. Open your sheet: https://docs.google.com/spreadsheets/d/1h5koYtMvGZcTkaH3a8r8-ZIxmspDXYTCA8k4aF__pqc/edit
+      2. File > Share > Publish to web
+      3. Choose the specific sheet/tab you want, format = "Web page"
+      4. Click Publish, copy the generated link (looks like:
+         https://docs.google.com/spreadsheets/d/e/2PACX-XXXXXXXX/pubhtml)
+      5. Paste that link into the src="" below, replacing the placeholder.
+  -->
+  <iframe id="sheet-frame"
+    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRew_jZ-FhITFcyJaV-LJn6JcgI-TqmaUmtEk2ttZ8Dl-kzw5Uhc3zWBpILlzwzlZFIoKPoeqHGYMA-/pubhtml?widget=false&headers=false"
+    allowfullscreen>
+  </iframe>
+
+  <!-- Hidden looping silent video keeps Fire Stick from treating the tab as idle -->
+  <video id="keep-awake" autoplay muted loop playsinline>
+    <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/5/5a/Black_frame.webm/Black_frame.webm.360p.vp9.webm" type="video/webm">
+  </video>
+
+  <script>
+    // Extra safety: some browsers require a user gesture or reload to start autoplay.
+    // This forces a play() call once the page loads, and retries if it gets blocked.
+    const video = document.getElementById('keep-awake');
+    function tryPlay() {
+      video.play().catch(() => {
+        setTimeout(tryPlay, 1000);
+      });
+    }
+    tryPlay();
+
+    // Also nudge the video every few minutes in case the browser pauses it
+    // during long idle periods.
+    setInterval(() => {
+      if (video.paused) {
+        video.play().catch(() => {});
+      }
+    }, 60000);
+  </script>
+
+</body>
+</html>
